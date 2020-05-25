@@ -1,6 +1,6 @@
 import {writable, derived} from 'svelte/store'
-import {squareNumber} from './validate'
-import {isFixed} from './boardStore'
+import {squareNumber} from './state/squares'
+import {isFixed} from './state/board'
  
 export const select = writable({x:0,y:0})
 

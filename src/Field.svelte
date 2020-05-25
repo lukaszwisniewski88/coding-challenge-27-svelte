@@ -1,11 +1,14 @@
 <script>
     import {onMount} from 'svelte'
-    import selected , {select}from './selected.store.js'
-    import {validateLines} from './validate'
-    import board, {isFixed, getField} from './boardStore.js'
+    import selected , {select} from './selected.store.js'
+    import lines from './state/lines.js'
+    import squares, {squareNumber} from './state/squares.js'
+     import board, {isFixed, getField} from './state/board.js'
     export let coords, sub
     let value, blink, invalid, fixed = false
     let line = []
+    let squareNum
+
     onMount(()=>{
         if(sub.cell > 0){
             coords.x = 3*sub.cell + coords.x
@@ -16,11 +19,13 @@
         value = board.createField(coords)
         line[0] = coords.x*2
         line[1] = (coords.y*2)+1
+        squareNum = squareNumber(coords.x, coords.y)
         
     })
     const handler = () => {
         let {x,y} = coords
         select.set({x,y}) 
+        console.log(squareNum)
         
     }
     $: {
@@ -29,16 +34,17 @@
             fixed = true
         }
         else fixed = false
+
         if($selected.x == coords.x && $selected.y == coords.y) {
             blink = true
         }
         else blink = false
 
-        //if(isFixed(coords)) fixed = true
-        //else fixed = false
-
-        if($validateLines && ($validateLines[line[0]].duplicate || $validateLines[line[1]].duplicate)) invalid = true
+        if($lines && ($lines[line[0]].duplicate || $lines[line[1]].duplicate)) invalid = true
         else invalid = false
+        if($squares){
+            if($squares[squareNum].remains.length === 0) invalid = true
+        }
     }
 </script>
 <style>

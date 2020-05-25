@@ -1,8 +1,10 @@
 <script>
-    import board from './boardStore.js'
+    import board from './state/board.js'
     import selected, {select} from './selected.store.js'
     import intersection from 'lodash.intersection'
-    import {validateLines,validateSquares} from './validate.js'
+    import squares from './state/squares.js'
+    import lines from './state/lines.js'
+
     //export let boardSize = 9
     let pressed = 0
     let keys = [1,2,3,4,5,6,7,8,9]
@@ -41,10 +43,12 @@
     }
     const actionDelete = () =>{
         pressed = ' '
+        console.log('delete')
+        save()
     }
     $: {
-        if($validateLines){
-            keys = intersection($validateLines[$selected.lineX].remains, $validateLines[$selected.lineY].remains, $validateSquares[$selected.square].remains ) 
+        if($lines){
+            keys = intersection($lines[$selected.lineX].remains, $lines[$selected.lineY].remains, $squares[$selected.square].remains ) 
         }
     }
 </script>

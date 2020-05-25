@@ -1,5 +1,5 @@
 <script>
-    import state from './boardStore.js' 
+    import state from './state/board.js'
     import Field from './Field.svelte'
     export let size = 9
     
