@@ -13,17 +13,14 @@ const remains = (array) => {
   return difference([1, 2, 3, 4, 5, 6, 7, 8, 9], array);
 };
 export default (data) => {
-  return data.map((line) => {
-    let arr = [];
-    line.map((inner) => {
-      inner.value.subscribe((val) => {
-        arr.push(val);
-      });
-    });
+  let mapped = data.map(set => {
+    return set.map(field=>field.value)
+  })
+  return mapped.map((line) => {
     return {
-      full: arr,
-      duplicate: duplicates(arr),
-      remains: remains(arr),
+      full: line,
+      duplicate: duplicates(line),
+      remains: remains(line),
     };
   });
 };

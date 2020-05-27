@@ -1,7 +1,16 @@
 <script>
-    import state from './state/board.js'
     import Field from './Field.svelte'
+    import board from './state/board.js'
+
     export let size = 9
+    let boardInit
+    board.initialised.subscribe(init=>{
+        boardInit = init
+    })
+    console.log(boardInit)
+    board.resetBoard(size)
+    console.log(boardInit)
+
     
 </script>
 <style>

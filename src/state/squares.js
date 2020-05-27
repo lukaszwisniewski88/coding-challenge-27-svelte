@@ -1,6 +1,6 @@
-import board from './board'
-import {derived} from 'svelte/store'
-import extract from './extract'
+import extract from "./extract";
+import { derived } from "svelte/store";
+import board from "./board";
 
 export const squareNumber = (x, y) => {
   let col = Math.floor(x / 3);
@@ -8,13 +8,10 @@ export const squareNumber = (x, y) => {
   return col + 3 * row;
 };
 
-export default derived(board, ($board) => {
+export default derived(board.fields, ($board) => {
   let squares = Array.from(new Array(9), () => []);
-  if ($board && $board.length === 81) {
-    $board.map((element) => {
-      squares[squareNumber(element.x, element.y)].push(element);
-    });
-    return extract(squares);
-  }
-  return false;
+  $board.map((field) => {
+    squares[squareNumber(field.x, field.y)].push(field);
+  });
+  return extract(squares);
 });

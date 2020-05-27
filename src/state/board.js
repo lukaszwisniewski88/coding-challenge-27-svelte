@@ -1,68 +1,61 @@
-import {writable} from 'svelte/store'
+import {writable, get} from 'svelte/store'
 import {fromFetch} from 'rxjs/fetch'
 import { switchMap, catchError } from 'rxjs/operators'
 
 
-const {subscribe, update, set } = writable([], ()=>{
-    // after subscribe
-})
+const board = Array(Math.pow(9,2))
+const size = 9
+const initialised = writable(false)
 
-const setField = (coords, value, fixed=false) => {
-    update((board)=>{
-        let filtered = board.filter((field)=>{ 
-            if(field.x===Number(coords.x) && field.y === Number(coords.y)) return true
-        })
-        if(!filtered[0].fixed){
-            filtered[0].value.set(value)
-            filtered[0].fixed = fixed
-        }
-        return [...board]
-    })
-}
-const createField = (coords, value = ' ') => {
+export const coordsToIndex = (coords) => {
     let {x,y} = coords
-    let valueStore = writable(value)
-    update((board)=>{
-        return [...board, {
-            x:x,
-            y:y,
-            value:valueStore,
-            fixed:false
-        }]
-    })
-    return valueStore
+	return (y*size)+x
 }
-export const getField = coords => {
-    let index
-    subscribe(board=>{
-        index = board.filter(element=>(element.x === coords.x && element.y === coords.y))
-        return board
-    })
-    return index[0]
+export const indexToCoords = (index) => {
+    return {
+        x:index%size,
+		y:Math.floor(index/size)
+	}
 }
 export const isFixed = (coords) => {
-
-    let {x,y} = coords
-    let fixed = false
-    update((board)=>{
-        board.map(value=>{
-            if(value.x === x && value.y === y){
-                fixed = value.fixed
-            }
-        })
-        return board
-    })
-    return fixed
+    let index = coordsToIndex(coords)
+    let value = get(board[index])
+    return value.fixed
 }
-
-const resetBoard = () => {
-    update((board)=>{
-        return board.map(element => {
-            element.value.set(' ')
-            element.fixed = false
-            return element
-        })
+const setField = (coords, value, fixed=false) => {
+    let index = coordsToIndex(coords)
+    board[index].update(field=>{
+        return {
+            x:field.x,
+            y:field.y,
+            value:value,
+            fixed:fixed
+        }
     })
+}
+const resetBoard = () => {
+    initialised.set(false)
+    for(let index = 0; index < Math.pow(size,2) ; index++){
+        let {x,y} = indexToCoords(index)
+        board[index] = writable({
+            x:x,
+            y:y, 
+            value: ' ',
+            fixed : false
+        })
+    }
+    initialised.set(true)
+}
+const clearBoard = () => {
+    for(let index = 0; index < Math.pow(size,2) ; index++){
+        let {x,y} = indexToCoords(index)
+        board[index].set({
+            x:x,
+            y:y, 
+            value: ' ',
+            fixed : false
+        })
+    }
 }
 const getFromApi = (size, difficulty = 1) => {
     let data = fromFetch(`https://cors-anywhere.herokuapp.com/http://www.cs.utep.edu/cheon/ws/sudoku/new/?size=${size}&level=${difficulty}`)
@@ -74,7 +67,7 @@ const getFromApi = (size, difficulty = 1) => {
             console.log(err)
             return {error:err}
         }))
-        resetBoard()
+        clearBoard()
         data.subscribe(value => {
             value.squares.map(element => {
                 setField({x:element.x, y:element.y}, element.value, true)
@@ -83,8 +76,9 @@ const getFromApi = (size, difficulty = 1) => {
 }
 
 export default {
-    subscribe,
     setField,
-    createField,
-    getFromApi
+    resetBoard,
+    getFromApi,
+    fields:board,
+    initialised
 }
