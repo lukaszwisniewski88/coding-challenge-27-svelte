@@ -18,13 +18,14 @@
 
 <main> 
 	<Board  size={9}/>
-	<button on:click={apiCheck}>Nowa Gra</button>
-	<button on:click={()=>solve()}>SOLVE</button>
+	<button on:click={apiCheck}>Get Board</button>
+	<button on:click={()=>solve()}>Solve</button>
 	<select bind:value={difficulty} default={1}>
-		<option value={1}>Łatwy</option>
-		<option value={2}>Średni</option>
-		<option value={3}>Trudny</option>
+		<option value={1}>Easy</option>
+		<option value={2}>Medium</option>
+		<option value={3}>Hard</option>
 	</select>
+	<button on:click={boardStore.clearBoard}>RESET</button>
 	<Keyboard bind:pressed boardSize={9}/>
 </main>
 

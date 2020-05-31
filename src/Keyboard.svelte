@@ -70,11 +70,11 @@
 <section>
 
   {#if !$selected.fixed}
-    Klawiatura
+    Keys
     {#each keys as number}
       <button on:click={handler}>{number}</button>
     {/each}
-    <button on:click={actionDelete}>USUŃ</button>
+    <button on:click={actionDelete}>DELETE</button>
   {/if}
 
 </section>

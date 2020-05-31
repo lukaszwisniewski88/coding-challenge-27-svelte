@@ -78,6 +78,7 @@ const getFromApi = (size, difficulty = 1) => {
 export default {
     setField,
     resetBoard,
+    clearBoard,
     getFromApi,
     fields:board,
     initialised

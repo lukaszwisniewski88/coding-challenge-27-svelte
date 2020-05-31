@@ -11,7 +11,6 @@
     fixed = false;
   let line = [];
   let squareNum;
-
   onMount(() => {
     if (sub.cell > 0) {
       coords.x = 3 * sub.cell + coords.x;
