@@ -86,13 +86,6 @@ const solveBack = () => {
   const getPossibilities = (cellIndex)=>{
     select.set(indexToCoords(cellIndex))
   }
-  function wait(ms) {
-    var start = Date.now(),
-        now = start;
-    while (now - start < ms) {
-      now = Date.now();
-    }
-}
   //find next empty cell
   //for value in possibilities
   //if no possibilities return
